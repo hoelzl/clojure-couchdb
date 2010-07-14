@@ -9,6 +9,7 @@
 
 (def +test-server+ "http://localhost:5984/")
 (def +test-db+ "clojure-couchdb-test-database")
+(def +test-db2+  "clojure-couchdb-test-database2")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;         Utilities           ;;
@@ -298,6 +299,19 @@
   ;; try to delete an attachment that doesn't exist
   (is (= true (couchdb/attachment-delete +test-server+ +test-db+ "bam" "f"))))
 
+(defn test-db-fixture [db f]
+     (try
+       (couchdb/database-create +test-server+ db)
+       (f)
+       (finally
+	(couchdb/database-delete +test-server+ db))))
+
+(deftest replication-test
+  (couchdb/database-replicate +test-server+ +test-db+
+		      +test-server+  +test-db2+)
+  (is (= (couchdb/document-list +test-server+ +test-db+)
+	 (couchdb/document-list +test-server+  +test-db2+))))
+
 ;;; test-ns-hook is used to run tests in the specified order
 (defn test-ns-hook []
   (databases)
@@ -305,6 +319,7 @@
   (attachments)
   (documents-passing-map)
   (attachments-passing-map)
+  (test-db-fixture +test-db2+ replication-test)
   (cleanup)
   (error-checking)
   (cleanup))
