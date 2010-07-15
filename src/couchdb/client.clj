@@ -348,18 +348,17 @@ http://wiki.apache.org/couchdb/HTTP_Bulk_Document_API"
 the first argument, so you can call the functions without the server argument.
 
 Example:
-(with-server \"http://localhost:5984\"
-  (database-list))"
+;(with-server http://localhost:5984
+;  (database-list))"
 
   [server & body]
   (let [ssharp (gensym "server-")]      ;necessary because nested-`
    `(let [~ssharp ~server]
-      (binding ~(vec (mapcat #(vector (-> % meta :name symbol)
-                                      `(partial (var-get ~%) ~ssharp))
+      (with-bindings ~(apply hash-map
+                             (mapcat #(vector % `(partial (var-get ~%) ~ssharp))
                              (vars-to-rebind)))
         (do
           ~@body)))))
 
-;; (with-server (apply str (concat "http://" "localhost" ":5984"))
-;;   (database-list))
+;; (with-server (apply str (concat "http://" "localhost" ":5984")) (database-list))
 
