@@ -140,3 +140,14 @@ Consider a show named forty-two in the design-document test:
     user=> ; The latest field is the id. It's left blank in this example
     user=> (show-get "http://localhost:5984/" "some-db" "test" "forty-two" "")
     user=> ("<div>42</div>")
+
+##Contributors
+
+In no particular order:
+
+* [robinbrandt](http://github.com/robinbrandt/)
+* [Wojciech Kaczmarek](http://github.com/kunley)
+* [Moritz Ulrich](http://github.com/the-kenny/)
+* [Ryan Senior](http://github.com/senior)
+
+If I forgot you here, please send me a message. I just can't track down all commiters of this project.
